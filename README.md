@@ -126,11 +126,29 @@ workers.
 ### 1. Clone repository
 
 ```bash
-git clone <repository_url>
-cd crud-api
+git clone git@github.com:zagorky/simple-crud-api.git
 ```
 
-### 2. Install dependencies
+### 2. Checkout to the `dev` branch
+
+```bash
+git checkout dev
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Create `.env` file
+
+```bash
+cp .env.example .env
+
+```
+
+### 3. Install dependencies
 
 ```bash
 npm install
