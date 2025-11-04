@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start:dev": "ts-node-dev --respawn --env-file=.env src/app.ts",
     "start:prod": "cross-env NODE_ENV=production node --env-file=.env dist/app.js",
