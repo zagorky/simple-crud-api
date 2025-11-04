@@ -49,29 +49,29 @@ Each user is represented as an object with the following structure:
 :
     ['chess', 'coding'] // array of strings, required
 }
-````
+```
 
 ---
 
 ## ⚙️ Technical Stack
 
-* **Language:** JavaScript / TypeScript
-* **Runtime:** Node.js v24.x.x (24.14.0 or higher)
-* **Dependencies:**
+- **Language:** JavaScript / TypeScript
+- **Runtime:** Node.js v24.x.x (24.14.0 or higher)
+- **Dependencies:**
+  - `nodemon`, `dotenv`, `cross-env`
+  - `typescript`, `ts-node`, `ts-node-dev`
+  - `eslint`, `prettier`
+  - `webpack`, `webpack-cli`
+  - `uuid`, `@types/*`
 
-    * `nodemon`, `dotenv`, `cross-env`
-    * `typescript`, `ts-node`, `ts-node-dev`
-    * `eslint`, `prettier`
-    * `webpack`, `webpack-cli`
-    * `uuid`, `@types/*`
-* **Testing:** any library (e.g., Jest, Supertest)
+- **Testing:** any library (e.g., Jest, Supertest)
 
 ---
 
 ## 🧠 Error Handling
 
 | Case             | Status Code | Description                 |
-|------------------|-------------|-----------------------------|
+| ---------------- | ----------- | --------------------------- |
 | Invalid UUID     | 400         | User ID is not a valid UUID |
 | User not found   | 404         | No record with such ID      |
 | Missing fields   | 400         | Request body is incomplete  |
@@ -108,7 +108,7 @@ PORT=4000
 ## 🏗️ Scripts
 
 | Command               | Description                                                                   |
-|-----------------------|-------------------------------------------------------------------------------|
+| --------------------- | ----------------------------------------------------------------------------- |
 | `npm run start:dev`   | Runs the app in development mode with hot reload (`nodemon` or `ts-node-dev`) |
 | `npm run start:prod`  | Builds the project and runs the bundled version                               |
 | `npm run start:multi` | Starts multiple instances using Node.js Cluster API (load balancing)          |
@@ -120,7 +120,7 @@ PORT=4000
 Example for `PORT=4000` and 4 CPU cores:
 
 | Role          | Address              |
-|---------------|----------------------|
+| ------------- | -------------------- |
 | Load Balancer | `localhost:4000/api` |
 | Worker 1      | `localhost:4001/api` |
 | Worker 2      | `localhost:4002/api` |
@@ -217,5 +217,5 @@ the [RS School CRUD API assignment](https://github.com/rolling-scopes-school/tas
 
 ---
 
-**Author:** *[zagorky](https://github.com/zagorky)*
+**Author:** _[zagorky](https://github.com/zagorky)_
 **Course:** Node.js 2025
