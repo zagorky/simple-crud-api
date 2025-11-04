@@ -31,7 +31,17 @@ Each user is represented as an object with the following structure:
     id: 'uuid',        // generated on the server
         username
 :
-    'John',  // string, required
+    'john', // string, require
+        email
+:
+    '', // string, required
+        password
+:
+    '', // string, required
+        address
+:
+    '123 Main St', // string, required:
+        'John',  // string, required
         age
 :
     25,           // number, required
