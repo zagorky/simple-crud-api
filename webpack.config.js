@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 const dirName = path.dirname(fileURLToPath(import.meta.url));
 
 export default {
-  entry: './src/app.ts',
+  entry: './src/server.ts',
   target: 'node',
   mode: process.env.NODE_ENV || 'production',
 
