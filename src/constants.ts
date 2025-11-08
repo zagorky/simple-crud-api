@@ -24,11 +24,13 @@ export const ROUTES = {
 };
 
 export const ERROR_MESSAGES = {
-  NOT_FOUND: 'Not found',
   INVALID_USER_ID: 'Invalid userId',
   INVALID_USER_BODY: 'Invalid user body',
+  INVALID_JSON: 'Invalid JSON',
+  NOT_FOUND: 'Not found',
   USER_NOT_FOUND: 'User not found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
+  PARSE_BODY_ERROR: 'Failed to parse body',
 };
 
 export const IndexNotFound = -1;
