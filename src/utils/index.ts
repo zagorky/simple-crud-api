@@ -1,5 +1,5 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-import { styleText } from 'node:util';
+import type {IncomingMessage, ServerResponse} from 'http';
+import {styleText} from 'node:util';
 
 export const sendError = (res: ServerResponse, status: number, message: string) => {
   res.writeHead(status);

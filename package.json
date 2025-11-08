@@ -9,7 +9,8 @@
     "build": "webpack --mode production",
     "test": "jest --detectOpenHandles --forceExit",
     "lint": "eslint --ext .ts src/",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
