@@ -1,32 +1,23 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const dirName = path.dirname(fileURLToPath(import.meta.url));
+import { resolve } from 'path';
 
 export default {
-  entry: './src/server.ts',
+  entry: './src/index.ts',
   target: 'node',
-  mode: process.env.NODE_ENV || 'production',
-
-  output: {
-    path: path.resolve(dirName, 'dist'),
-    filename: 'server.js',
-    clean: true,
-  },
-
-  resolve: {
-    extensions: ['.ts', '.js'],
-  },
-
+  mode: 'production',
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
     ],
   },
-
-  devtool: 'source-map',
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+  output: {
+    filename: 'index.js',
+    path: resolve(import.meta.dirname, 'dist'),
+  },
 };
