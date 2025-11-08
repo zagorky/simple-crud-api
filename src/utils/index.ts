@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-
-export const ROUTE_REGEX = /^\/api\/users\/([a-f0-9\-]+)$/;
+import { styleText } from 'node:util';
 
 export const sendError = (res: ServerResponse, status: number, message: string) => {
   res.writeHead(status);
@@ -20,3 +19,9 @@ export const parseBody = (req: IncomingMessage) => {
     });
   });
 };
+
+export const logError = (error: string) => console.log(styleText(['redBright', 'dim'], error));
+
+export const logSuccess = (input: string) => console.log(styleText(['cyanBright', 'dim'], input));
+
+export const generateId = () => crypto.randomUUID();

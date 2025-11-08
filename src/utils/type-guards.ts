@@ -16,6 +16,10 @@ export const isString = (data: unknown): data is string => {
   return typeof data === 'string';
 };
 
+const isNumber = (data: unknown): data is number => {
+  return typeof data === 'number';
+};
+
 export const isObject = (data: unknown): data is object => {
   return typeof data === 'object' && data !== null;
 };
@@ -29,7 +33,7 @@ export const isValidUserBody = (body: unknown): body is Omit<User, 'id'> =>
   hasProperty('username', body) &&
   isString(body.username) &&
   hasProperty('age', body) &&
-  isString(body.age) &&
+  isNumber(body.age) &&
   hasProperty('hobbies', body) &&
   isArray(body.hobbies) &&
   body.hobbies.every((h: unknown) => typeof h === 'string');
