@@ -6,5 +6,3 @@ export type User = {
 };
 
 export const db: User[] = [];
-
-export const generateId = () => crypto.randomUUID();
