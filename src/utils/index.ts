@@ -1,12 +1,22 @@
-import {UUID_REGEX} from '../constants';
-import {User} from '../db';
+import { IncomingMessage, ServerResponse } from 'http';
 
-export const isValidUUID = (id: string) => {
-    return UUID_REGEX.test(id);
+export const ROUTE_REGEX = /^\/api\/users\/([a-f0-9\-]+)$/;
+
+export const sendError = (res: ServerResponse, status: number, message: string) => {
+  res.writeHead(status);
+  res.end(JSON.stringify({ message }));
 };
 
-export const isValidUserBody = (body: Record<PropertyKey, unknown>): body is Omit<User, 'id'> =>
-    typeof body.username === 'string' &&
-    typeof body.age === 'number' &&
-    Array.isArray(body.hobbies) &&
-    body.hobbies.every((h: any) => typeof h === 'string');
+export const parseBody = (req: IncomingMessage) => {
+  return new Promise((resolve) => {
+    let data = '';
+    req.on('data', (chunk) => (data += chunk));
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(data));
+      } catch {
+        resolve({});
+      }
+    });
+  });
+};
