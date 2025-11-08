@@ -1,101 +1,117 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { db, User } from './db';
-import { generateId, parseBody, sendError } from './utils';
-import { ERROR_MESSAGES, HEADERS, IndexNotFound, METHODS, ROUTE_REGEX, ROUTES, STATUS_CODES } from './constants';
-import { isValidUserBody, isValidUUID } from './utils/type-guards';
+import {createServer, IncomingMessage, ServerResponse} from 'http';
+import {db, User} from './db';
+import {generateId, logger, parseBody, sendError} from './utils';
+import {ERROR_MESSAGES, HEADERS, IndexNotFound, METHODS, ROUTE_REGEX, ROUTES, STATUS_CODES} from './constants';
+import {isValidUserBody, isValidUUID} from './utils/type-guards';
+
+const setHeaders = (res: ServerResponse) => {
+  const methods = Object.values(METHODS).join(', ');
+  res.setHeader(HEADERS.CONTENT_TYPE, HEADERS.APPLICATION_JSON);
+  res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_ORIGIN, '*');
+  res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_METHODS, methods);
+  res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_HEADERS, HEADERS.CONTENT_TYPE);
+};
 
 export const createAppServer = () => {
   return createServer(async (req: IncomingMessage, res: ServerResponse) => {
-    const methods = Object.values(METHODS).join(', ');
-    res.setHeader(HEADERS.CONTENT_TYPE, HEADERS.APPLICATION_JSON);
-    res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_ORIGIN, '*');
-    res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_METHODS, methods);
-    res.setHeader(HEADERS.ACCESS_CONTROL_ALLOW_HEADERS, HEADERS.CONTENT_TYPE);
+    const url = req.url || '';
+    const method = req.method || '';
 
-    if (req.method === METHODS.OPTIONS) {
+    setHeaders(res);
+    logger.request(method, url);
+
+    if (method === METHODS.OPTIONS) {
       res.writeHead(STATUS_CODES.NO_CONTENT);
       res.end();
       return;
     }
 
-    const url = req.url || '';
-    const method = req.method || '';
-
     if (!url.startsWith(ROUTES.USERS)) {
-      res.writeHead(STATUS_CODES.NOT_FOUND);
-      res.end(JSON.stringify({ message: ERROR_MESSAGES.NOT_FOUND }));
-      return;
+      logger.request(method, url, STATUS_CODES.NOT_FOUND);
+      return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.NOT_FOUND);
     }
 
-    const body = await parseBody(req);
+    let body: any;
+    try {
+      body = await parseBody(req);
+    } catch (err) {
+      logger.error(ERROR_MESSAGES.PARSE_BODY_ERROR, { url, err });
+      return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_JSON);
+    }
+
+    const match = url.match(ROUTE_REGEX);
+    const id = match?.[1];
 
     if (url === ROUTES.USERS && method === METHODS.GET) {
+      logger.request(method, url, 200);
       res.writeHead(STATUS_CODES.OK);
-      res.end(JSON.stringify(db));
-      return;
+      return res.end(JSON.stringify(db));
     }
 
-    const getMatch = url.match(ROUTE_REGEX);
-    if (getMatch && method === METHODS.GET) {
-      const id = getMatch[1];
+    if (id && [METHODS.GET, METHODS.PUT, METHODS.DELETE].includes(method)) {
       if (!isValidUUID(id)) {
+        logger.request(method, url, 400);
         return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_ID);
       }
-      const user = db.find((u) => u.id === id);
-      if (!user) {
-        return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+
+    if ([METHODS.PUT, METHODS.POST].includes(method)) {
+      if (!isValidUserBody(body)) {
+        logger.request(method, url, STATUS_CODES.BAD_REQUEST);
+        return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_BODY);
       }
-      res.writeHead(STATUS_CODES.OK);
-      res.end(JSON.stringify(user));
-      return;
     }
 
     if (url === ROUTES.USERS && method === METHODS.POST) {
-      if (!isValidUserBody(body)) {
-        return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_BODY);
-      }
       const newUser: User = { id: generateId(), ...body };
       db.push(newUser);
+      logger.info('User created', { id: newUser.id, username: newUser.username });
       res.writeHead(STATUS_CODES.CREATED);
       res.end(JSON.stringify(newUser));
+      logger.request(method, url, STATUS_CODES.CREATED);
       return;
     }
 
-    const putMatch = url.match(ROUTE_REGEX);
-    if (putMatch && method === METHODS.PUT) {
-      const id = putMatch[1];
-      if (!isValidUUID(id)) {
-        return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_ID);
-      }
-      if (!isValidUserBody(body)) {
-        return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_BODY);
-      }
+    if (id && method === METHODS.PUT) {
       const index = db.findIndex((u) => u.id === id);
       if (index === IndexNotFound) {
+        logger.request(method, url, STATUS_CODES.NOT_FOUND);
         return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
       }
       db[index] = { id, ...body };
       res.writeHead(STATUS_CODES.OK);
       res.end(JSON.stringify(db[index]));
+      logger.request(method, url, STATUS_CODES.OK);
       return;
     }
 
-    const delMatch = url.match(ROUTE_REGEX);
-    if (delMatch && method === METHODS.DELETE) {
-      const id = delMatch[1];
-      if (!isValidUUID(id)) {
-        return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_ID);
-      }
-      const index = db.findIndex((u) => u.id === id);
-      if (index === IndexNotFound) {
+    if (id && method === METHODS.GET) {
+      const user = db.find((u) => u.id === id);
+      if (!user) {
+        logger.request(method, url, STATUS_CODES.NOT_FOUND);
         return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
       }
-      db.splice(index, 1);
-      res.writeHead(STATUS_CODES.NO_CONTENT);
-      res.end();
+      res.writeHead(STATUS_CODES.OK);
+      res.end(JSON.stringify(user));
+      logger.request(method, url, STATUS_CODES.OK);
       return;
     }
 
+    if (id && method === METHODS.DELETE) {
+      const index = db.findIndex((u) => u.id === id);
+      if (index === IndexNotFound) {
+        logger.request(method, url, STATUS_CODES.NOT_FOUND);
+        return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
+      }
+      const deleted = db.splice(index, 1)[0];
+      logger.info('User deleted', { id: deleted.id });
+      res.writeHead(STATUS_CODES.NO_CONTENT);
+      res.end();
+      logger.request(method, url, STATUS_CODES.NO_CONTENT);
+      return;
+    }
+
+    logger.request(method, url, STATUS_CODES.NOT_FOUND);
     sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.NOT_FOUND);
   });
 };
