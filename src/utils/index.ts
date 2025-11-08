@@ -1,5 +1,5 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-import {styleText} from 'node:util';
+import type { IncomingMessage, ServerResponse } from 'http';
+import { styleText } from 'node:util';
 
 export const sendError = (res: ServerResponse, status: number, message: string) => {
   res.writeHead(status);
@@ -27,8 +27,8 @@ export const logSuccess = (input: string) => console.log(styleText(['magentaBrig
 export const generateId = () => crypto.randomUUID();
 
 export const logger = {
-  info: (msg: string, meta?: string) => logInfo(`[INFO] ${new Date().toISOString()} | ${msg} , ${meta || ''}`),
-  error: (msg: string, meta?: string) => logError(`[ERROR] ${new Date().toISOString()} | ${msg} , ${meta || ''}`),
+  info: (msg: string, meta?: string) => logInfo(`[INFO] ${new Date().toISOString()} | ${msg} ${meta || ''}`),
+  error: (msg: string, meta?: string) => logError(`[ERROR] ${new Date().toISOString()} | ${msg} ${meta || ''}`),
   request: (method: string, url: string, status?: number) => {
     const timestamp = new Date().toISOString();
     const statusStr = status ? `→ ${status}` : '';
