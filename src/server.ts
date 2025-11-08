@@ -1,8 +1,8 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { db, User } from './db';
-import { generateId, parseBody, sendError } from './utils';
-import { ERROR_MESSAGES, HEADERS, METHODS, ROUTES, STATUS_CODES } from './constants';
-import { isValidUserBody, isValidUUID } from './utils/type-guards';
+import {createServer, IncomingMessage, ServerResponse} from 'http';
+import {db, User} from './db';
+import {generateId, parseBody, sendError} from './utils';
+import {ERROR_MESSAGES, HEADERS, IndexNotFound, METHODS, ROUTE_REGEX, ROUTES, STATUS_CODES} from './constants';
+import {isValidUserBody, isValidUUID} from './utils/type-guards';
 
 const setHeaders = (res: ServerResponse) => {
   const methods = Object.values(METHODS).join(', ');
@@ -28,7 +28,7 @@ export const createAppServer = () => {
       return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.NOT_FOUND);
     }
 
-    const idMatch = url.match(/^\/api\/users\/([^\/]+)$/);
+    const idMatch = url.match(ROUTE_REGEX);
     const id = idMatch ? idMatch[1] : null;
 
     if (id && !isValidUUID(id)) {
@@ -61,7 +61,7 @@ export const createAppServer = () => {
       const index = db.findIndex((u) => u.id === id);
 
       if (method === METHODS.GET) {
-        if (index === -1) {
+        if (index === IndexNotFound) {
           return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
         }
         res.writeHead(STATUS_CODES.OK);
@@ -72,7 +72,7 @@ export const createAppServer = () => {
         if (!isValidUserBody(body)) {
           return sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.INVALID_USER_BODY);
         }
-        if (index === -1) {
+        if (index === IndexNotFound) {
           return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
         }
         db[index] = { id, ...body };
@@ -81,7 +81,7 @@ export const createAppServer = () => {
       }
 
       if (method === METHODS.DELETE) {
-        if (index === -1) {
+        if (index === IndexNotFound) {
           return sendError(res, STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
         }
         db.splice(index, 1);

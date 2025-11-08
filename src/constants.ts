@@ -1,4 +1,4 @@
-export const ROUTE_REGEX = /^\/api\/users\/([a-f0-9\-]+)$/;
+export const ROUTE_REGEX = /^\/api\/users\/([^\/]+)$/;
 
 export const HEADERS = {
   CONTENT_TYPE: 'Content-Type',
