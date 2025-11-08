@@ -6,9 +6,9 @@ export const HEADERS = {
   ACCESS_CONTROL_ALLOW_METHODS: 'Access-Control-Allow-Methods',
   ACCESS_CONTROL_ALLOW_HEADERS: 'Access-Control-Allow-Headers',
   APPLICATION_JSON: 'application/json',
-};
+} as const;
 
-export const METHODS = { GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE', OPTIONS: 'OPTIONS' };
+export const METHODS = { GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE', OPTIONS: 'OPTIONS' } as const;
 
 export const STATUS_CODES = {
   OK: 200,
@@ -17,11 +17,11 @@ export const STATUS_CODES = {
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
-};
+} as const;
 
 export const ROUTES = {
   USERS: '/api/users',
-};
+} as const;
 
 export const ERROR_MESSAGES = {
   INVALID_USER_ID: 'Invalid userId',
@@ -31,6 +31,6 @@ export const ERROR_MESSAGES = {
   USER_NOT_FOUND: 'User not found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   PARSE_BODY_ERROR: 'Failed to parse body',
-};
+} as const;
 
 export const IndexNotFound = -1;

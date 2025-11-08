@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { styleText } from 'node:util';
 
 export const sendError = (res: ServerResponse, status: number, message: string) => {
@@ -20,18 +20,18 @@ export const parseBody = (req: IncomingMessage) => {
   });
 };
 
-export const logError = (error: string) => console.log(styleText(['redBright', 'dim'], error));
-
-export const logSuccess = (input: string) => console.log(styleText(['magentaBright', 'dim'], input));
+export const logError = (error: string) => console.log(styleText(['redBright'], error));
+export const logInfo = (input: string) => console.log(styleText(['cyanBright'], input));
+export const logSuccess = (input: string) => console.log(styleText(['magentaBright'], input));
 
 export const generateId = () => crypto.randomUUID();
 
 export const logger = {
-  info: (msg: string, meta?: any) => console.log(`[INFO] ${new Date().toISOString()} | ${msg}`, meta || ''),
-  error: (msg: string, meta?: any) => console.error(`[ERROR] ${new Date().toISOString()} | ${msg}`, meta || ''),
+  info: (msg: string, meta?: string) => logInfo(`[INFO] ${new Date().toISOString()} | ${msg} , ${meta || ''}`),
+  error: (msg: string, meta?: string) => logError(`[ERROR] ${new Date().toISOString()} | ${msg} , ${meta || ''}`),
   request: (method: string, url: string, status?: number) => {
     const timestamp = new Date().toISOString();
     const statusStr = status ? `→ ${status}` : '';
-    console.log(`[REQ] ${timestamp} | ${method} ${url} ${statusStr}`);
+    logSuccess(`[REQ] ${timestamp} | ${method} ${url} ${statusStr}`);
   },
 };

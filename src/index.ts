@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { createAppServer } from './server';
-import { logSuccess } from './utils';
+import { logInfo } from './utils';
 
 config();
 
@@ -9,12 +9,12 @@ const PORT = Number(process.env.USERS_PORT) || 4000;
 const server = createAppServer();
 
 server.listen(PORT, () => {
-  logSuccess(`Server running on http://localhost:${PORT}`);
+  logInfo(`Server running on http://localhost:${PORT}`);
 });
 
 process.on('SIGINT', () => {
   server.close(() => {
-    logSuccess('Server closed');
+    logInfo('Server closed');
     process.exit(0);
   });
 });
