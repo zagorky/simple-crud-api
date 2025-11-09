@@ -6,3 +6,5 @@ export type User = {
   age: number;
   hobbies: string[];
 };
+
+export type UserWithoutId = Omit<User, 'id'>;

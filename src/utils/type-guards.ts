@@ -1,4 +1,4 @@
-import type { User } from '../db';
+import type { UserWithoutId } from '../types/user-model';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -27,7 +27,7 @@ export const isArray = <T>(data: unknown, itemGuard?: (item: unknown) => item is
   return Array.isArray(data) && (itemGuard ? data.every(itemGuard) : true);
 };
 
-export const isValidUserBody = (body: unknown): body is Omit<User, 'id'> =>
+export const isValidUserBody = (body: unknown): body is UserWithoutId =>
   isObject(body) &&
   hasProperty('username', body) &&
   isString(body.username) &&
