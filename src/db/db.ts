@@ -62,7 +62,7 @@ class PrimaryDatabase {
 export const Db = new PrimaryDatabase();
 
 export const executeDbCommand = (command: DBCommand): Promise<DBResponse> => {
-  if (typeof process.send !== 'function') {
+  if (process.env.NODE_ENV === 'test' || typeof process.send !== 'function') {
     try {
       const response = Db.execute(command);
       return Promise.resolve(response);
