@@ -18,6 +18,7 @@ export default tseslint.config(
     },
     rules: {
       'no-useless-escape': 'off',
+      'no-case-declaration': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/consistent-type-imports': 'error',
     },
