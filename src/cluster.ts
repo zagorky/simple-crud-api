@@ -1,16 +1,16 @@
-import {cpus} from 'node:os';
-import {createServer} from 'http';
+import { availableParallelism } from 'node:os';
+import { createServer } from 'http';
 import * as http from 'node:http';
 import cluster from 'node:cluster';
-import {config} from 'dotenv';
-import {logError, logSuccess} from './utils';
-import {ERROR_MESSAGES, STATUS_CODES} from './constants';
-import {createAppServer} from './server';
+import { config } from 'dotenv';
+import { logError, logSuccess } from './utils';
+import { ERROR_MESSAGES, STATUS_CODES } from './constants';
+import { createAppServer } from './server';
 
 config();
 
-const numCPUs = cpus().length;
-const PORT = Number(process.env.MULTI_PORT) || 5000;
+const numCPUs = availableParallelism();
+const PORT = Number(process.env.MULTI_PORT) || 3000;
 
 if (cluster.isPrimary) {
   logSuccess(`Primary ${process.pid} is running`);
