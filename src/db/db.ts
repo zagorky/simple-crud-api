@@ -8,6 +8,10 @@ import type { User } from '../types/user-model';
 class PrimaryDatabase {
   private db: User[] = [];
 
+  clear() {
+    this.db = [];
+  }
+
   execute(command: DBCommand): DBResponse {
     switch (command.type) {
       case 'GET_ALL':

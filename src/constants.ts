@@ -31,6 +31,7 @@ export const ERROR_MESSAGES = {
   USER_NOT_FOUND: 'User not found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   PARSE_BODY_ERROR: 'Failed to parse body',
+  UNKNOWN_ERROR: 'Unknown error',
 } as const;
 
 export const IndexNotFound = -1;
