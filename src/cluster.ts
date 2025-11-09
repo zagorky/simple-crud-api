@@ -78,8 +78,6 @@ if (cluster.isPrimary) {
 } else {
   process.on('message', (msg: { port: number }) => {
     const serverInstance = createAppServer();
-    serverInstance.listen(msg.port, () => {
-      logSuccess(`Worker ${process.pid} on http://localhost:${msg.port}`);
-    });
+    serverInstance.listen(msg.port, () => {});
   });
 }
